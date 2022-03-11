@@ -1,30 +1,48 @@
 module.exports = function check(str, bracketsConfig) {
   let open = ""
   let close = ""
+  let identical = []
   for (const iterator of bracketsConfig) {
-    open += iterator[0]
-    close += iterator[1]
+    if (iterator[0] === iterator[1]) {
+      identical.push(iterator[0])
+    } else {
+      open += iterator[0]
+      close += iterator[1]
+    } 
   }
   console.log(open)
   console.log(close)
+  console.log(identical)
   console.log(str)
   return isBalanced(str, "", open, close)
 }
 
 function isOpen(open, char) {
-  return open.indexOf(char) != -1
+  return open.indexOf(char) != -1 && isIdentical(char)
 }
 
 function isClose(close, char) {
   return close.indexOf(char) != -1
 }
 
-function isMatching(open, charOpen, close, charClose) {
+function isMatching(open, charOpen, close, charClose) { 
   return open.indexOf(charOpen) === close.indexOf(charClose)
 }
 
 function isEmpty(str) {
   return str.length <= 0;
+}
+
+function isIdentical(identical, char) {
+  if (identical.indexOf(char) != -1) {
+    if (flag.indexOf(char) === 0) {
+      flag.indexOf(char)++
+      return true
+    } else {
+      flag.indexOf(char)--
+      return false
+    }
+  } else return true
 }
 
 function isBalanced(input, stack, open, close) {

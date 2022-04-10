@@ -1,61 +1,24 @@
 module.exports = function check(str, bracketsConfig) {
-  let open = ""
-  let close = ""
-  let identical = []
-  for (const iterator of bracketsConfig) {
-    if (iterator[0] === iterator[1]) {
-      identical.push(iterator[0])
-    } else {
-      open += iterator[0]
-      close += iterator[1]
-    } 
+  const stack = []
+  const openedBrackets = []
+  const closedBrackets = []
+  for (let i = 0; i < bracketsConfig.length; i++) {
+    openedBrackets.push(bracketsConfig[i][0])
+    closedBrackets.push(bracketsConfig[i][1])
   }
-  console.log(open)
-  console.log(close)
-  console.log(identical)
-  console.log(str)
-  return isBalanced(str, "", open, close)
-}
-
-function isOpen(open, char) {
-  return open.indexOf(char) != -1 && isIdentical(char)
-}
-
-function isClose(close, char) {
-  return close.indexOf(char) != -1
-}
-
-function isMatching(open, charOpen, close, charClose) { 
-  return open.indexOf(charOpen) === close.indexOf(charClose)
-}
-
-function isEmpty(str) {
-  return str.length <= 0;
-}
-
-function isIdentical(identical, char) {
-  if (identical.indexOf(char) != -1) {
-    if (flag.indexOf(char) === 0) {
-      flag.indexOf(char)++
-      return true
+  for (let j = 0; j < str.length; j++) {
+    if (closedBrackets.includes(str[j]) && stack.length > 0) {
+      const bracket = openedBrackets[closedBrackets.indexOf(str[j])]
+      if (stack[stack.length - 1] === bracket || stack[stack.length - 1] === str[j]) {
+        stack.pop()
+      } else if (str[j] !== bracket) {
+        return false
+      } else {
+        stack.push(str[j])
+      }
     } else {
-      flag.indexOf(char)--
-      return false
+      stack.push(str[j])
     }
-  } else return true
-}
-
-function isBalanced(input, stack, open, close) {
-  if (isEmpty(input)) {
-    console.log("stack empty? ", isEmpty(stack))
-    return isEmpty(stack)
   }
-  else if (isOpen(open, input.charAt(0))) {
-    console.log("char is open, ", input.charAt(0))
-    return isBalanced(input.substring(1), input.charAt(0) + stack, open, close)
-  } else if (isClose(close, input.charAt(0))) {
-    console.log("char is end, ", input.charAt(0))
-    return !isEmpty(stack) && isMatching(open, stack.charAt(0), close, input.charAt(0))
-      && isBalanced(input.substring(1), stack.substring(1), open, close)
-  } else return isBalanced(input.substring(1), stack, open, close)
+  return stack.length === 0
 }
